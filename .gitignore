@@ -1,3 +1,74 @@
+###########################
+# General
+###########################
+
+!requirements.txt
+
+# Data/Backups
+*.backup
+*.csv
+*.ignore
+*.txt
+*_ignore.ipynb
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Project-specific directories
+checkpoints/
+env*/
+data/
+ignore/
+logs/
+papers/
+repositories/
+results/
+
+# Models
+*.h5
+*.hdf5
+*.pkl
+*.joblib
+*.pb
+*.index
+*variables.data-*
+
+###########################
+# Other
+###########################
+
+# Generated
+bin
+*.dll
+*.exe
+*.dot
+
+# Sonarqube
+.scannerwork
+
+# SQLite
+*.db
+*.db-journal
+
+# Visual Studio Code
+.vscode
+
+###########################
+# Python
+###########################
+
+# Anaconda installation scripts
+Anaconda3*.sh
+
+# AutoKeras
+time_series_forecaster
+
+# AutoTS
+.lr_find_*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -5,6 +76,25 @@ __pycache__/
 
 # C extensions
 *.so
+
+# CatBoost
+catboost_info
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# CUDA
+cuda_*_linux.run
+*.i
+*.ii
+*.gpu
+*.ptx
+*.cubin
+*.fatbin
+
+# Cython debug symbols
+cython_debug/
 
 # Distribution / packaging
 .Python
@@ -20,40 +110,21 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Django stuff:
 *.log
@@ -65,27 +136,42 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
 # IPython
 profile_default/
 ipython_config.py
 
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Ludwig
+*.meta.json
+.lock_preprocessing
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+
+# PEP 582
+__pypackages__/
 
 # pipenv
 #   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
@@ -101,62 +187,68 @@ ipython_config.py
 #   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
 #poetry.lock
 
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#pdm.lock
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#   in version control.
-#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
-.pdm.toml
-.pdm-python
-.pdm-build/
+# PyBuilder
+.pybuilder/
+target/
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
+# PyCharm
+.idea
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
+# pyenv
+.python-version
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Pyre type checker
+.pyre/
+
+# PyTorch (building from source)
+pytorch
+
+# ruff
+.ruff_cache
+
+# Rope project settings
+.ropeproject
 
 # SageMath parsed files
 *.sage.py
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+docs/sphinx/_build/
+docs/sphinx/source/
+docs/sphinx/tests/
 
 # Spyder project settings
 .spyderproject
 .spyproject
 
-# Rope project settings
-.ropeproject
+# Translations
+*.mo
+*.pot
 
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+# Unit test / coverage reports
+.cache
+*.cover
+.coverage
+.coverage.*
+.nox/
+.tox/
+*.py,cover
+cover/
+coverage.xml
+htmlcov/
+nosetests.xml
+.hypothesis/
+.pytest_cache/
 
 # pytype static type analyzer
 .pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
