@@ -28,17 +28,17 @@ def fetch_data(
     print(df_stations.columns)
     print(df_stations.shape)
 
-    station_ids = dict(
-        zip(
-            df_stations['stno'],
-            df_stations['county'] + '__' + df_stations['Name']
-        )
-    )
+    station_ids = dict(zip(df_stations['stno'], df_stations['county'] + '__' + df_stations['Name']))
 
     for station_id, name in station_ids.items():
         print(station_id, name)
 
     # TODO:
+
+    # "h" = hourly
+    # "d" = daily
+    # "m" = monthly
+
     # declare -a levels=("h" "d" "m")
     # for i in {1000..9999}; do
     #     for l in "${levels[@]}"; do
