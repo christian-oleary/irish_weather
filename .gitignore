@@ -1,3 +1,10 @@
+# Layout:
+# 1. General (project-specific)
+# 2. Other (tools with only a few rules)
+# 3. Python
+# 4. Java
+# 5. JavaScript/TypeScript
+
 ###########################
 # General
 ###########################
@@ -8,7 +15,9 @@
 *.backup
 *.csv
 *.ignore
+*.svg
 *.txt
+*.wav
 *_ignore.ipynb
 
 # Images
@@ -19,12 +28,9 @@
 
 # Project-specific directories
 checkpoints/
-env*/
 data/
 ignore/
 logs/
-papers/
-repositories/
 results/
 
 # Models
@@ -36,15 +42,34 @@ results/
 *.index
 *variables.data-*
 
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Sphinx
+docs/*.svg
+docs/*.md
+docs/*.html
+
 ###########################
 # Other
 ###########################
 
+# AWS
+*.pem
+
 # Generated
-bin
 *.dll
 *.exe
 *.dot
+bin
+cache/
+share
+
+# MacOS
+.DS_Store
 
 # Sonarqube
 .scannerwork
@@ -54,7 +79,14 @@ bin
 *.db-journal
 
 # Visual Studio Code
-.vscode
+.vscode/**/*
+!.vscode/extensions.json
+
+# Sass
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
 
 ###########################
 # Python
@@ -62,6 +94,8 @@ bin
 
 # Anaconda installation scripts
 Anaconda3*.sh
+# Conda general
+.conda
 
 # AutoKeras
 time_series_forecaster
@@ -121,9 +155,9 @@ MANIFEST
 .env
 .venv
 env/
-venv/
-ENV/
 env.bak/
+pyvenv.cfg
+venv/
 venv.bak/
 
 # Django stuff:
@@ -146,6 +180,7 @@ ipython_config.py
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # Ludwig
 *.meta.json
@@ -252,3 +287,93 @@ nosetests.xml
 
 # pytype static type analyzer
 .pytype/
+
+###########################
+# Java
+###########################
+
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar
+
+# BlueJ files
+*.ctxt
+
+# Compiled class file
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# Eclipse Core
+.project
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+###########################
+# JavaScript/TypeScript
+###########################
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# DynamoDB Local files
+.dynamodb/
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+.lock-wscript
+build/Release
+node_modules/
+jspm_packages/
+web_modules/
+*.tsbuildinfo
+.npm
+.eslintcache
+.stylelintcache
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# vuepress
+.vuepress/dist
+.temp
+
+# Yarn Integrity file
+.yarn-integrity
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
