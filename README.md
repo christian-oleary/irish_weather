@@ -10,7 +10,9 @@ Installation:
 conda create -n env_weather -y python=3.10
 conda activate env_weather
 pip install -r requirements.txt
-python src/fetch_data.py
+python -m src monthly
+python -m src daily
+python -m src hourly
 ```
 
 ## Pre-commit

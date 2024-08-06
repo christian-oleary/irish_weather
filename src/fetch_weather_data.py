@@ -124,7 +124,9 @@ def fetch_data(
         logger.info(f'Data saved to {output_path}')
 
 
-def parse_csv_data(station_path: Path, station_id: int, data_format: str, output_path: Path) -> pd.DataFrame:
+def parse_csv_data(
+    station_path: Path, station_id: int, data_format: str, output_path: Path
+) -> pd.DataFrame:
     """Parse CSV data from a Met Eireann weather station CSV file
 
     :param Path | str station_path: Input file path
