@@ -17,19 +17,17 @@ python -m src hourly
 
 ## Development
 
-Pre-commit:
-
 ```bash
 # Follow installation commands above, then:
+
+# For pre-commit
 conda activate env_weather
 conda install pre-commit
 pre-commit run --all-files
-```
 
-Tests:
+# For tests
+pytest
 
-```bash
-# Follow installation commands above, then:
-conda activate env_weather
-pip install pytest-cov
+# For linting
+pylint
 ```

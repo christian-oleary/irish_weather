@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.fetch_weather_data import fetch_data, STATION_DATA_URL
+from src.fetch_weather_data import WeatherDataCollector, STATION_DATA_URL
 
 
 class TestFetchWeatherData(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestFetchWeatherData(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures"""
-        self.data_dir = Path('tests/data')
+        self.data_dir = 'tests/data'
         self.station_url = 'tests/data/stations_test.csv'
         self.data_formats = ['hourly', 'daily', 'monthly']
         self.sleep_delay = 1
@@ -29,8 +29,17 @@ class TestFetchWeatherData(unittest.TestCase):
 
     def test_fetch_data(self):
         """Test fetch_data function"""
+        # Test data collection
+        collector = WeatherDataCollector(
+            data_dir=self.data_dir,
+            station_url=self.station_url,
+            data_formats=self.data_formats,
+            sleep_delay=self.sleep_delay,
+            overwrite_files=self.overwrite_files
+        )
+        collector.fetch_data()
+
         # Test if the data directory is created
-        fetch_data(self.data_dir, self.station_url, self.data_formats, self.sleep_delay, self.overwrite_files)
         self.assertTrue(self.data_dir.exists())
 
         # Test if the station data file is downloaded
