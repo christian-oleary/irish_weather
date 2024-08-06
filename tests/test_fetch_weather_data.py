@@ -17,7 +17,7 @@ class TestFetchWeatherData(unittest.TestCase):
         """Set up test fixtures"""
         self.data_dir = 'tests/data'
         self.station_url = 'tests/data/stations_test.csv'
-        self.data_formats = ['hourly', 'daily', 'monthly']
+        self.data_formats = ['monthly', 'daily', 'hourly']
         self.sleep_delay = 1
         self.overwrite_files = True
 

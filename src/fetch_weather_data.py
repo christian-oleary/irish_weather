@@ -18,10 +18,10 @@ SLEEP_DELAY = 5
 STATION_DATA_URL = 'https://cli.fusio.net/cli/climate_data/stations.csv'
 
 # Formats
-HOURLY = 'hourly'
-DAILY = 'daily'
 MONTHLY = 'monthly'
-DATA_FORMATS = [HOURLY, DAILY, MONTHLY]
+DAILY = 'daily'
+HOURLY = 'hourly'
+DATA_FORMATS = [MONTHLY, DAILY, HOURLY]
 
 
 class WeatherDataCollector:
