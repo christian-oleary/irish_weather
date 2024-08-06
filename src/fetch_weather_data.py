@@ -25,8 +25,8 @@ data_formats = [HOURLY, DAILY, MONTHLY]
 
 
 def fetch_data(
-    data_dir: str | Path,
-    station_url: str,
+    data_dir: str | Path = DATA_DIR,
+    station_url: str = STATION_DATA_URL,
     data_formats: list[str] = data_formats,
     sleep_delay: int = SLEEP_DELAY,
     overwrite_files: bool = False,
@@ -213,6 +213,3 @@ def parse_date_col(df, data_format):
 
 if __name__ == '__main__':
     fetch_data(DATA_DIR, STATION_DATA_URL, overwrite_files=False)
-    # fetch_data(DATA_DIR, STATION_DATA_URL, data_formats=[MONTHLY], overwrite_files=False)
-    # fetch_data(DATA_DIR, STATION_DATA_URL, data_formats=[DAILY], overwrite_files=False)
-    # fetch_data(DATA_DIR, STATION_DATA_URL, data_formats=[HOURLY], overwrite_files=False)
