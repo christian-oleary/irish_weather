@@ -9,14 +9,17 @@
 # General
 ###########################
 
+*.txt
 !requirements.txt
 
 # Data/Backups
 *.backup
+data/*
 *.csv
+# !data/stations.csv
+# !*_all_stations.csv
 *.ignore
 *.svg
-*.txt
 *.wav
 *_ignore.ipynb
 
@@ -28,7 +31,6 @@
 
 # Project-specific directories
 checkpoints/
-data/
 ignore/
 logs/
 results/
@@ -52,6 +54,7 @@ pids
 docs/*.svg
 docs/*.md
 docs/*.html
+
 
 ###########################
 # Other
