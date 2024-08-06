@@ -25,6 +25,7 @@ class TestFetchWeatherData(unittest.TestCase):
         df_stations = pd.read_csv(STATION_DATA_URL)
         df_stations = df_stations.head(self.MAX_STATIONS)
         df_stations.drop('get_data', axis=1, errors='ignore', inplace=True)
+        Path(self.data_dir).mkdir(exist_ok=True)
         df_stations.to_csv(Path(self.station_url), index=False)
 
     def test_fetch_data(self):

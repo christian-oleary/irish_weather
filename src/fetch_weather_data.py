@@ -126,11 +126,11 @@ class WeatherDataCollector:
                 df_station = self.parse_csv_data(station_path, data.stno, data_format, df_path)
 
             if len(self.df_all_stations) == 0:
-                df_all_stations = df_station.sort_index()
+                self.df_all_stations = df_station.sort_index()
             else:
-                df_all_stations = pd.concat([df_all_stations, df_station], axis=1).sort_index()
+                self.df_all_stations = pd.concat([self.df_all_stations, df_station], axis=1).sort_index()
 
-        return df_all_stations
+        return self.df_all_stations
 
     def download_zip_file(
         self, zip_url: str, name: str, data_format: str, output_dir: Path
