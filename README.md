@@ -15,10 +15,21 @@ python -m src daily
 python -m src hourly
 ```
 
-## Pre-commit
+## Development
+
+Pre-commit:
 
 ```bash
 # Follow installation commands above, then:
 conda activate env_weather
 conda install pre-commit
+pre-commit run --all-files
+```
+
+Tests:
+
+```bash
+# Follow installation commands above, then:
+conda activate env_weather
+pip install pytest-cov
 ```

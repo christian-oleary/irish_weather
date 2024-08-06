@@ -14,10 +14,9 @@
 
 # Data/Backups
 *.backup
-data/*
+data
 *.csv
-# !data/stations.csv
-# !*_all_stations.csv
+!tests/one_station.csv
 *.ignore
 *.svg
 *.wav

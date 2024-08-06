@@ -49,7 +49,8 @@ def fetch_data(
     # Download station data to retrieve IDs
     logger.info('Downloading station ID data...')
     df_stations = pd.read_csv(station_url)
-    df_stations.drop('get_data', axis=1).to_csv(Path(data_dir, 'stations.csv'), index=False)
+    df_stations.drop('get_data', axis=1, errors='ignore', inplace=True)
+    df_stations.to_csv(Path(data_dir, 'stations.csv'), index=False)
 
     # Fetch data by time format
     for data_format in data_formats:
@@ -98,7 +99,7 @@ def fetch_data(
             else:
                 logger.debug(f'Skipped {name} {data_format}')
 
-            if overwrite_files or not output_dir.exists():
+            if output_dir.exists():
                 station_path = Path(output_dir, f'{data_format[0]}ly{station_id}.csv')
                 df_path = Path(str(station_path).replace('.csv', '_DATA_.csv'))
                 if df_path.exists() and not overwrite_files:
