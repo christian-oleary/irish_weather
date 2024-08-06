@@ -21,11 +21,13 @@ STATION_DATA_URL = 'https://cli.fusio.net/cli/climate_data/stations.csv'
 HOURLY = 'hourly'
 DAILY = 'daily'
 MONTHLY = 'monthly'
+data_formats = [HOURLY, DAILY, MONTHLY]
 
 
 def fetch_data(
     data_dir: str | Path,
     station_url: str,
+    data_formats: list[str] = data_formats,
     sleep_delay: int = SLEEP_DELAY,
     overwrite_files: bool = False,
 ):
@@ -33,7 +35,9 @@ def fetch_data(
 
     :param str | Path data_dir: Output data directory, defaults to 'data'
     :param str station_url: URL to Met Eireann stations data
+    :param list[str] data_formats: Data formats to fetch, defaults to ['hourly', 'daily', 'monthly']
     :param int sleep_delay: Delay between requests, defaults to 3
+    :param bool overwrite_files: Overwrite existing files, defaults to False
     """
     logger.info('Fetching data from Met Eireann')
     logger.debug(f'data_dir: {data_dir}')
@@ -48,7 +52,7 @@ def fetch_data(
     df_stations.drop('get_data', axis=1).to_csv(Path(data_dir, 'stations.csv'), index=False)
 
     # Fetch data by time format
-    for data_format in [MONTHLY, DAILY, HOURLY]:
+    for data_format in data_formats:
         logger.info(f'Downloading {data_format} zip files...')
         dataframes = []
         df_all = None
@@ -209,3 +213,6 @@ def parse_date_col(df, data_format):
 
 if __name__ == '__main__':
     fetch_data(DATA_DIR, STATION_DATA_URL, overwrite_files=False)
+    # fetch_data(DATA_DIR, STATION_DATA_URL, data_formats=[MONTHLY], overwrite_files=False)
+    # fetch_data(DATA_DIR, STATION_DATA_URL, data_formats=[DAILY], overwrite_files=False)
+    # fetch_data(DATA_DIR, STATION_DATA_URL, data_formats=[HOURLY], overwrite_files=False)
