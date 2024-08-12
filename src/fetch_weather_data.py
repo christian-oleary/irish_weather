@@ -1,8 +1,8 @@
 """Fetch public weather data for Ireland"""
 
 from __future__ import annotations
-from pathlib import Path
 from io import BytesIO
+from pathlib import Path
 import shutil
 import time
 from urllib.error import HTTPError
@@ -12,8 +12,12 @@ from zipfile import ZipFile
 from loguru import logger
 import pandas as pd
 
+from src.logs import Logs
+
 # Data
 DATA_DIR = 'data'
+MAX_ROWS = -1  # i.e. no limit
+MIN_DATE = '1990-01-01'  # Threshold for dropping old data if max_rows reached
 SLEEP_DELAY = 5
 STATION_DATA_URL = 'https://cli.fusio.net/cli/climate_data/stations.csv'
 
@@ -30,31 +34,43 @@ class WeatherDataCollector:
     def __init__(
         self,
         data_dir: str = DATA_DIR,
-        station_url: str = STATION_DATA_URL,
         data_formats: list[str] | None = None,
+        max_rows: int = MAX_ROWS,
+        min_date: str = MIN_DATE,
+        overwrite_files: bool = False,
         sleep_delay: int = SLEEP_DELAY,
-        overwrite_files: bool = False
+        station_url: str = STATION_DATA_URL,
+        enable_logging: bool = True,
     ):
+        """Initialize WeatherDataCollector
+
+        :param str data_dir: Output directory, defaults to DATA_DIR
+        :param list[str] | None data_formats: _description_, defaults to None
+        :param int max_cols: Maximum number of columns, defaults to MAX_ROWS
+        :param str min_date: Earliest date threshold *IF* max_cols  reached, defaults to MIN_DATE
+        :param bool overwrite_files: Replace existing files, defaults to False
+        :param int sleep_delay: Delay between requests, defaults to SLEEP_DELAY
+        :param str station_url: URL to Met Eireann stations data, defaults to STATION_DATA_URL
+        :param bool enable_logging: Enable logging, defaults to True
+        """
         if data_formats is None:
             data_formats = DATA_FORMATS
 
         self.data_dir = data_dir
-        self.station_url = station_url
         self.data_formats = data_formats
-        self.sleep_delay = sleep_delay
+        self.max_rows = max_rows
+        self.min_date = min_date
         self.overwrite_files = overwrite_files
+        self.sleep_delay = sleep_delay
+        self.station_url = station_url
+        if enable_logging:
+            Logs(enable=enable_logging).log_to_stderr()
 
-        self.df_all_stations = pd.DataFrame()
+        self.df_all_stations = None
+        self.first_warning = True
 
     def fetch_data(self):
-        """Fetch Met Eireann weather data and save to CSV files
-
-        :param str | Path data_dir: Output data directory, defaults to 'data'
-        :param str station_url: URL to Met Eireann stations data
-        :param list[str] | None data_formats: Data formats to fetch
-        :param int sleep_delay: Delay between requests, defaults to 3
-        :param bool overwrite_files: Overwrite existing files, defaults to False
-        """
+        """Fetch Met Eireann weather data and save to CSV files"""
         logger.info('Fetching data from Met Eireann')
         logger.debug(f'data_dir: {self.data_dir}')
         logger.debug(f'station_url: {self.station_url}')
@@ -70,11 +86,14 @@ class WeatherDataCollector:
 
         # Fetch data by time format
         for data_format in self.data_formats:
+            self.df_all_stations = pd.DataFrame()
+            self.first_warning = True
             logger.info(f'Downloading {data_format} zip files...')
+
             # Fetch data by station
             for row in df_stations.itertuples():
+                logger.debug(f'{data_format} data: {self.df_all_stations.shape}. Next: {row.Name}')
                 self.fetch_station_data(row, data_format)
-            logger.debug(f'Data shape: {self.df_all_stations.shape}')
 
             # Save data to CSV
             output_path = Path(self.data_dir, f'{data_format}_all_stations.csv')
@@ -90,16 +109,13 @@ class WeatherDataCollector:
 
         :param pd._PandasNamedTuple data: Station data
         :param str data_format: Data format ('hourly', 'daily', 'monthly')
-        :param str | Path data_dir: Output data directory
-        :param bool overwrite_files: Overwrite existing CSV files
-        :param pd.DataFrame df_all_stations: Dataframe of all stations
         :raises ValueError: If invalid data format
         :return pd.DataFrame: Dataframe of all stations
         """
         data_types = [s.strip().lower() for s in data.data_types.split('|')]
 
         if data_format not in data_types:
-            logger.debug(f'Station {data.stno} ({data.Name}) does not have {data_format} data')
+            logger.debug(f'{data.Name} does not have {data_format} data')
             return self.df_all_stations
 
         name = (
@@ -115,7 +131,7 @@ class WeatherDataCollector:
         if self.overwrite_files or not output_dir.exists():
             self.download_zip_file(zip_url, name, data_format, output_dir)
         else:
-            logger.debug(f'Skipped {name} {data_format}')
+            logger.debug(f'Files found for {name}. Skipping...')
 
         if output_dir.exists():
             station_path = Path(output_dir, f'{data_format[0]}ly{data.stno}.csv')
@@ -128,8 +144,19 @@ class WeatherDataCollector:
             if len(self.df_all_stations) == 0:
                 self.df_all_stations = df_station.sort_index()
             else:
-                self.df_all_stations = pd.concat([self.df_all_stations, df_station], axis=1).sort_index()
+                self.df_all_stations = pd.concat(
+                    [self.df_all_stations, df_station], axis=1
+                ).sort_index()
 
+        if self.max_rows > 0 and len(self.df_all_stations) > self.max_rows:
+            if self.first_warning:
+                logger.warning(
+                    f'Reached {self.max_rows} columns. Removing dates before: {self.min_date}'
+                )
+                self.first_warning = False
+
+            self.df_all_stations = self.df_all_stations.loc[self.min_date :]  # type: ignore # noqa: E203
+            self.df_all_stations = self.df_all_stations.dropna(axis=1, how='all')
         return self.df_all_stations
 
     def download_zip_file(
@@ -251,9 +278,11 @@ class WeatherDataCollector:
 if __name__ == '__main__':
     collector = WeatherDataCollector(
         data_dir=DATA_DIR,
-        station_url=STATION_DATA_URL,
         data_formats=DATA_FORMATS,
+        max_rows=50000,
+        station_url=STATION_DATA_URL,
         sleep_delay=SLEEP_DELAY,
         overwrite_files=False,
     )
+
     collector.fetch_data()

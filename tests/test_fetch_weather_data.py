@@ -7,6 +7,7 @@ import pandas as pd
 import loguru
 
 from src.fetch_weather_data import WeatherDataCollector, STATION_DATA_URL
+from src.logs import Logs
 
 
 class TestFetchWeatherData(unittest.TestCase):
@@ -42,9 +43,14 @@ class TestFetchWeatherData(unittest.TestCase):
             station_url=self.station_url,
             data_formats=self.data_formats,
             sleep_delay=self.sleep_delay,
-            overwrite_files=self.overwrite_files
+            overwrite_files=self.overwrite_files,
         )
         collector.fetch_data()
 
         self.logger.info('Testing if data directory is created...')
         self.assertTrue(Path(self.data_dir).exists())
+
+    def test_logs_initialization(self):
+        """Test logs initialization"""
+        Logs(enable=False).log_to_stderr().log_to_file()
+        Logs(enable=True).log_to_stderr().log_to_file()

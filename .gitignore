@@ -49,12 +49,6 @@ pids
 *.seed
 *.pid.lock
 
-# Sphinx
-docs/*.svg
-docs/*.md
-docs/*.html
-
-
 ###########################
 # Other
 ###########################
@@ -259,6 +253,9 @@ pytorch
 .scrapy
 
 # Sphinx documentation
+docs/*.svg
+docs/*.md
+docs/*.html
 docs/_build/
 docs/sphinx/_build/
 docs/sphinx/source/
@@ -279,7 +276,6 @@ docs/sphinx/tests/
 .coverage.*
 .nox/
 .tox/
-*.py,cover
 cover/
 coverage.xml
 htmlcov/
