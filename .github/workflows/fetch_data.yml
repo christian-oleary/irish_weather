@@ -5,8 +5,8 @@ on:
         branches:
             - main
     schedule:
-        # every night at 01:30 UTC
-      - cron:  "30 1 * * *"
+        # every morning at 06:30 UTC
+      - cron:  "30 6 * * *"
 
 jobs:
     get_data:
@@ -20,10 +20,10 @@ jobs:
                     pip install -r requirements.txt
 
             -   name: Fetch monthly data
-                run: python -m src monthly
+                run: python -m src daily
 
             -   name: Archive data
                 uses: actions/upload-artifact@v4
                 with:
-                    name: monthly_all_stations.csv
-                    path: data/monthly_all_stations.csv
+                    name: daily_weather_data
+                    path: data/daily_all_stations.csv
