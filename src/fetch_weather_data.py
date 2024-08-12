@@ -37,7 +37,7 @@ class WeatherDataCollector:
         data_formats: list[str] | None = None,
         max_rows: int = MAX_ROWS,
         min_date: str = MIN_DATE,
-        overwrite_files: bool = False,
+        overwrite_files: bool = True,
         sleep_delay: int = SLEEP_DELAY,
         station_url: str = STATION_DATA_URL,
         enable_logging: bool = True,
@@ -66,7 +66,7 @@ class WeatherDataCollector:
         if enable_logging:
             Logs(enable=enable_logging).log_to_stderr()
 
-        self.df_all_stations = None
+        self.df_all_stations = pd.DataFrame()
         self.first_warning = True
 
     def fetch_data(self):

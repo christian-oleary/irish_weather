@@ -6,7 +6,7 @@ from src.fetch_weather_data import WeatherDataCollector, DATA_FORMATS
 from src.logs import Logs
 
 if __name__ == '__main__':
-    Logs().log_to_stderr().log_to_file(
+    Logs(enable=True).log_to_stderr().log_to_file(
         sink='logs/irish_weather.log',
         level='DEBUG',
         backtrace=True,

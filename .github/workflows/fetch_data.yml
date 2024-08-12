@@ -1,6 +1,12 @@
 name: Fetch Data
 
-on: [push]
+on:
+    push:
+        branches:
+            - main
+    schedule:
+        # every night at 01:30 UTC
+      - cron:  "30 1 * * *"
 
 jobs:
     get_data:
