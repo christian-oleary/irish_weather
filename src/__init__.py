@@ -2,4 +2,4 @@
 
 from loguru import logger
 
-logger.disable(__name__)
+logger.remove()

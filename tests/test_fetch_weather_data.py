@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 import pandas as pd
-import loguru
+from loguru import logger
 
 from src.fetch_weather_data import WeatherDataCollector, STATION_DATA_URL
 from src.logs import Logs
@@ -22,10 +22,11 @@ class TestFetchWeatherData(unittest.TestCase):
         self.data_formats = ['monthly', 'daily', 'hourly']
         self.sleep_delay = 1
         self.overwrite_files = True
-        self.logger = loguru.logger
+        Logs.log_to_stderr()
+        Logs.log_to_file()
 
         # Download station data to retrieve some test IDs
-        self.logger.info('Downloading station ID data...')
+        logger.info('Downloading station ID data...')
         df_stations = pd.read_csv(STATION_DATA_URL)
         df_stations = df_stations.head(self.MAX_STATIONS)
         df_stations.drop('get_data', axis=1, errors='ignore', inplace=True)
@@ -34,10 +35,10 @@ class TestFetchWeatherData(unittest.TestCase):
 
     def test_fetch_data(self):
         """Test fetch_data function"""
-        self.logger.info('Testing if station data file is downloaded...')
+        logger.info('Testing if station data file is downloaded...')
         self.assertTrue(Path(self.station_url).exists())
 
-        self.logger.info('Testing fetch_data function...')
+        logger.info('Testing fetch_data function...')
         collector = WeatherDataCollector(
             data_dir=self.data_dir,
             station_url=self.station_url,
@@ -47,10 +48,10 @@ class TestFetchWeatherData(unittest.TestCase):
         )
         collector.fetch_data()
 
-        self.logger.info('Testing if data directory is created...')
+        logger.info('Testing if data directory is created...')
         self.assertTrue(Path(self.data_dir).exists())
 
     def test_logs_initialization(self):
         """Test logs initialization"""
-        Logs(enable=False).log_to_stderr().log_to_file()
-        Logs(enable=True).log_to_stderr().log_to_file()
+        Logs.log_to_stderr()
+        Logs.log_to_file()

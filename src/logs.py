@@ -9,26 +9,20 @@ class Logs:
     """Logging setup"""
 
     DEFAULT_FORMAT = ''.join(
-        '<green>{time:YYYY-MM-DD HH:mm:ss}</green>|<level>{level: <8}</level>|'
-        '<cyan>{name}</cyan>:<cyan>{line}</cyan>|<level>{message}</level>'
+        '<green>{time:YYYY-MM-DD HH:mm:ss}</green>| <level>{level: <8}</level>|'
+        '<cyan>{name}</cyan>:<cyan>{line: <3}</cyan>| <level>{message}</level>'
     )
 
-    def __init__(self, enable=False):
-        logger.remove()
-        if enable:
-            logger.enable(__name__)
-        else:
-            logger.disable(__name__)
-
+    @classmethod
     def log_to_stderr(
-        self,
+        cls,
         log_format=DEFAULT_FORMAT,
         level='DEBUG',
         colorize=True,
         backtrace=False,
         diagnose=False,
         enqueue=True,
-    ) -> 'Logs':
+    ):
         """Set up logging to stderr"""
         logger.add(
             sys.stderr,
@@ -39,11 +33,11 @@ class Logs:
             diagnose=diagnose,
             enqueue=enqueue,
         )
-        logger.enable(__name__)
-        return self
 
+    @classmethod
     def log_to_file(
-        self,
+        cls,
+        log_format=DEFAULT_FORMAT,
         sink='logs/irish_weather.log',
         level='DEBUG',
         backtrace=True,
@@ -51,11 +45,12 @@ class Logs:
         rotation='30 MB',
         retention='14 days',
         compression='zip',
-        enqueue=True
-    ) -> 'Logs':
+        enqueue=True,
+    ):
         """Set up logging to file"""
         logger.add(
             sink=sink,
+            format=log_format,
             level=level,
             backtrace=backtrace,
             diagnose=diagnose,
@@ -64,5 +59,3 @@ class Logs:
             compression=compression,
             enqueue=enqueue,
         )
-        logger.enable(__name__)
-        return self

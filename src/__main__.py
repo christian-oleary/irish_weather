@@ -2,11 +2,15 @@
 
 import sys
 
+from loguru import logger
+
 from src.fetch_weather_data import WeatherDataCollector, DATA_FORMATS
 from src.logs import Logs
 
 if __name__ == '__main__':
-    Logs(enable=True).log_to_stderr().log_to_file(
+    logger.remove()
+    Logs.log_to_stderr()
+    Logs.log_to_file(
         sink='logs/irish_weather.log',
         level='DEBUG',
         backtrace=True,
@@ -30,5 +34,5 @@ if __name__ == '__main__':
             raise ValueError(f'Invalid data format: {data_format}. Options are: {DATA_FORMATS}')
 
     # Call the fetch_data function and pass the data_formats argument
-    collector = WeatherDataCollector(data_formats=formats)
+    collector = WeatherDataCollector(data_formats=formats, enable_logging=True)
     collector.fetch_data()

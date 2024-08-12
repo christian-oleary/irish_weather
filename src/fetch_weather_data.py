@@ -40,7 +40,7 @@ class WeatherDataCollector:
         overwrite_files: bool = True,
         sleep_delay: int = SLEEP_DELAY,
         station_url: str = STATION_DATA_URL,
-        enable_logging: bool = True,
+        enable_logging: bool = False,
     ):
         """Initialize WeatherDataCollector
 
@@ -64,7 +64,7 @@ class WeatherDataCollector:
         self.sleep_delay = sleep_delay
         self.station_url = station_url
         if enable_logging:
-            Logs(enable=enable_logging).log_to_stderr()
+            Logs.log_to_stderr()
 
         self.df_all_stations = pd.DataFrame()
         self.first_warning = True
@@ -280,9 +280,11 @@ if __name__ == '__main__':
         data_dir=DATA_DIR,
         data_formats=DATA_FORMATS,
         max_rows=50000,
+        min_date=MIN_DATE,
         station_url=STATION_DATA_URL,
         sleep_delay=SLEEP_DELAY,
         overwrite_files=False,
+        enable_logging=True,
     )
 
     collector.fetch_data()
