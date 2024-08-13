@@ -2,6 +2,11 @@
 
 Irish weather data from Met Eireann (Creative Commons Attribution 4.0 International (CC BY 4.0) License)
 
+[![Fetch Data](https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml)
+[![Pylint](https://github.com/christian-oleary/irish_weather/actions/workflows/pylint.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/pylint.yml)
+[![Tests (pytest and flake8)](https://github.com/christian-oleary/irish_weather/actions/workflows/tests.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/tests.yml)
+
+
 ## Data Download Page
 
 ### Using Command Line Interface
@@ -18,7 +23,7 @@ Alternatively, you can use the web interface on GitHub:
 
 - Navigate to the Actions page of the repository: [https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml?query=is%3Asuccess](https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml?query=is%3Asuccess)
 - Select first (most recent) action in the resulting table.
-- The following page contains a link to the zip file.
+- The following page contains a link to download a zip file containing data.
 
 ## Installation
 
