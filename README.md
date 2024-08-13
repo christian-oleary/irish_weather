@@ -2,6 +2,24 @@
 
 Irish weather data from Met Eireann (Creative Commons Attribution 4.0 International (CC BY 4.0) License)
 
+## Data Download Page
+
+### Using Command Line Interface
+
+Run the following command in a terminal (on Windows, use WSL or Git Bash) to get a link to the most recent data:
+
+```bash
+echo -e "\nFetching link to data...\n" && curl -s -f -L https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml?query=is%3Asuccess | grep -Eo "/\S+?\"" | grep -m 1 actions/runs | sed 's/"//g' | xargs -I {} echo https://github.com'{}'
+```
+
+### Using a Browser
+
+Alternatively, you can use the web interface on GitHub:
+
+- Navigate to the Actions page of the repository: [https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml?query=is%3Asuccess](https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml?query=is%3Asuccess)
+- Select first (most recent) action in the resulting table.
+- The following page contains a link to the zip file.
+
 ## Installation
 
 ```bash
