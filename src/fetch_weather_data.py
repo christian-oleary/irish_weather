@@ -11,6 +11,7 @@ from urllib.request import Request, urlopen
 from zipfile import ZipFile
 
 from loguru import logger
+import numpy as np
 import pandas as pd
 
 from src.logs import Logs
@@ -291,8 +292,10 @@ class WeatherDataCollector:
         df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
         df.index = pd.to_datetime(df.index, format=format_)
 
+        df = df.replace(' ', np.nan)
+
         # Ensure no future dates are present (again)
-        if df.index.str.contains(str(datetime.now().year + 1)).any():
+        if df.index.astype(str).str.contains(str(datetime.now().year + 1)).any():
             raise ValueError(f'Future dates found: parsing failed: {df.index}')
         return df
 
