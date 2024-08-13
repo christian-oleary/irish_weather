@@ -6,7 +6,7 @@ on:
             - main
     schedule:
         # every morning at 06:30 UTC
-      - cron:  "30 6 * * *"
+      - cron:  "30 15 * * *"
 
 jobs:
     get_data:
