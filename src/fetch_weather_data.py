@@ -201,10 +201,6 @@ class WeatherDataCollector:
         :raises ValueError: If headers not found in file
         :return pd.DataFrame: Formatted dataframe
         """
-        print('---------------------------------------------')
-        print(f'station_path: {station_path}')
-        print(f'station_id: {station_id}')
-        print(f'data_format: {data_format}')
         # Read CSV file
         with open(station_path, 'r', encoding='utf-8') as csv_file:
             lines = csv_file.readlines()
@@ -273,29 +269,31 @@ class WeatherDataCollector:
         :param str data_format: Data format ('hourly', 'daily', 'monthly')
         :return pd.DataFrame: Formatted dataframe
         """
+        # Set date column as index and drop
         df = df.set_index('date', drop=True)
 
+        # Assert that all values are numeric
+        df = df.astype(float)
+
+        # Determine time format
         if data_format in ['daily', 'monthly']:
             format_ = '%d-%b-%Y'
         elif data_format == 'hourly':
             format_ = '%d-%b-%Y %H:%M'
 
-        print(df)
-        print(df.shape)
-        print(f'data_format: {data_format}')
+        logger.debug(f'Found dates in range: {df.index[0]} - {df.index[-1]}')
 
-        print(f'df.index {df.index} (type({df.index}))')
-        start = df.index[0]
-        print(start)
+        # Ensure no future dates are present
+        if df.index.str.contains(str(datetime.now().year + 1)).any():
+            raise ValueError(f'Future dates found: parsing failed: {df.index}')
 
-        freq = data_format[0].upper()
-        print(freq)
-        print(str(datetime.now().year))
-        print(df.index.str.contains(str(datetime.now().year + 1)).all())
-        assert not df.index.str.contains(str(datetime.now().year + 1)).any()
-
+        # Convert index to DatetimeIndex
         df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
         df.index = pd.to_datetime(df.index, format=format_)
+
+        # Ensure no future dates are present (again)
+        if df.index.str.contains(str(datetime.now().year + 1)).any():
+            raise ValueError(f'Future dates found: parsing failed: {df.index}')
         return df
 
 

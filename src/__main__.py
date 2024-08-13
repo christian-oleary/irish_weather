@@ -33,7 +33,5 @@ if __name__ == '__main__':
             raise ValueError(f'Invalid data format: {data_format}. Options are: {DATA_FORMATS}')
 
     # Call the fetch_data function and pass the data_formats argument
-    collector = WeatherDataCollector(
-        data_formats=formats, overwrite_files=False, enable_logging=True
-    )
+    collector = WeatherDataCollector(data_formats=formats, enable_logging=True)
     collector.fetch_data()
