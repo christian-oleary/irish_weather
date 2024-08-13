@@ -256,7 +256,7 @@ class WeatherDataCollector:
             raise ValueError(f'Headers not found in {station_path}\n' + '\n'.join(lines[:40]))
         return headers_line
 
-    def parse_date_col(self, df, data_format):
+    def parse_date_col(self, df: pd.DataFrame, data_format: str) -> pd.DataFrame:
         """Attempt to parse date column in dataframe
 
         :param pd.DataFrame df: Input dataframe
@@ -270,6 +270,13 @@ class WeatherDataCollector:
         elif data_format == 'hourly':
             format_ = '%d-%b-%Y %H:%M'
 
+        print(f'df.index {df.index} (type({df.index}))')
+        start = df.index[0]
+        print(start)
+        print(df.shape)
+        print(data_format)
+        freq = data_format[0].upper()
+        print(freq)
         df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
         df.index = pd.to_datetime(df.index, format=format_)
         return df
