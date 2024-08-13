@@ -141,12 +141,13 @@ class WeatherDataCollector:
             else:
                 df_station = self.parse_csv_data(station_path, data.stno, data_format, df_path)
 
-            if len(self.df_all_stations) == 0:
-                self.df_all_stations = df_station.sort_index()
-            else:
-                self.df_all_stations = pd.concat(
-                    [self.df_all_stations, df_station], axis=1
-                ).sort_index()
+            if len(df_station) > 0:
+                if len(self.df_all_stations) == 0:
+                    self.df_all_stations = df_station.sort_index()
+                else:
+                    self.df_all_stations = pd.concat(
+                        [self.df_all_stations, df_station], axis=1
+                    ).sort_index()
 
         if self.max_rows > 0 and len(self.df_all_stations) > self.max_rows:
             if self.first_warning:
@@ -199,6 +200,10 @@ class WeatherDataCollector:
         :raises ValueError: If headers not found in file
         :return pd.DataFrame: Formatted dataframe
         """
+        print('---------------------------------------------')
+        print(f'station_path: {station_path}')
+        print(f'station_id: {station_id}')
+        print(f'data_format: {data_format}')
         # Read CSV file
         with open(station_path, 'r', encoding='utf-8') as csv_file:
             lines = csv_file.readlines()
@@ -214,6 +219,10 @@ class WeatherDataCollector:
 
         # Read data to dataframe
         df = pd.read_csv(output_path)
+
+        if len(df) == 0:
+            logger.warning(f'Empty data found for {station_id}. Skipping...')
+            return df
 
         # Create time index
         if lines[headers_line].startswith(month_header):
@@ -269,12 +278,13 @@ class WeatherDataCollector:
             format_ = '%d-%b-%Y'
         elif data_format == 'hourly':
             format_ = '%d-%b-%Y %H:%M'
+        print(df)
+        print(df.shape)
+        print(f'data_format: {data_format}')
 
         print(f'df.index {df.index} (type({df.index}))')
         start = df.index[0]
         print(start)
-        print(df.shape)
-        print(data_format)
         freq = data_format[0].upper()
         print(freq)
         df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
