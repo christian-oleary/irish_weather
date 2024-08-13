@@ -1,6 +1,7 @@
 """Fetch public weather data for Ireland"""
 
 from __future__ import annotations
+from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 import shutil
@@ -278,6 +279,7 @@ class WeatherDataCollector:
             format_ = '%d-%b-%Y'
         elif data_format == 'hourly':
             format_ = '%d-%b-%Y %H:%M'
+
         print(df)
         print(df.shape)
         print(f'data_format: {data_format}')
@@ -285,8 +287,13 @@ class WeatherDataCollector:
         print(f'df.index {df.index} (type({df.index}))')
         start = df.index[0]
         print(start)
+
         freq = data_format[0].upper()
         print(freq)
+        print(str(datetime.now().year))
+        print(df.index.str.contains(str(datetime.now().year + 1)).all())
+        assert not df.index.str.contains(str(datetime.now().year + 1)).any()
+
         df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
         df.index = pd.to_datetime(df.index, format=format_)
         return df
