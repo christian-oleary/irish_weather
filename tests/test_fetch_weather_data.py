@@ -1,5 +1,6 @@
 """Test fetch_weather_data.py"""
 
+from datetime import datetime
 import unittest
 from pathlib import Path
 
@@ -50,6 +51,9 @@ class TestFetchWeatherData(unittest.TestCase):
 
         logger.info('Testing if data directory is created...')
         self.assertTrue(Path(self.data_dir).exists())
+
+        if int(str(collector.df_all_stations.index[-1]).split('-')[0]) != datetime.now().year:
+            raise ValueError('Data not fetched for the current year')
 
     def test_logs_initialization(self):
         """Test logs initialization"""

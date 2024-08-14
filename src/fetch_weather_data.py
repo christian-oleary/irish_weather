@@ -69,7 +69,10 @@ class WeatherDataCollector:
             Logs.log_to_stderr()
 
         self.df_all_stations = pd.DataFrame()
+        self.failed_stations: list = []
         self.first_warning = True
+        self.start_year = -1
+        self.end_year = -1
 
     def fetch_data(self):
         """Fetch Met Eireann weather data and save to CSV files"""
@@ -84,6 +87,7 @@ class WeatherDataCollector:
         logger.info('Downloading station ID data...')
         df_stations = pd.read_csv(self.station_url)
         df_stations.drop('get_data', axis=1, errors='ignore', inplace=True)
+        df_stations.sort_values(by=['county', 'Name'], inplace=True)
         df_stations.to_csv(Path(self.data_dir, 'stations.csv'), index=False)
 
         # Fetch data by time format
@@ -101,6 +105,10 @@ class WeatherDataCollector:
             output_path = Path(self.data_dir, f'{data_format}_all_stations.csv')
             logger.info(f'Saving data to {output_path}')
             self.df_all_stations.to_csv(output_path)
+
+        # Log stations where data could not be fetched
+        for station in self.failed_stations:
+            logger.warning(f'Failed to fetch data for {station}')
 
     def fetch_station_data(
         self,
@@ -143,7 +151,9 @@ class WeatherDataCollector:
             else:
                 df_station = self.parse_csv_data(station_path, data.stno, data_format, df_path)
 
-            if len(df_station) > 0:
+            if len(df_station) == 0:
+                self.failed_stations.append(name)
+            else:
                 if len(self.df_all_stations) == 0:
                     self.df_all_stations = df_station.sort_index()
                 else:
@@ -231,7 +241,14 @@ class WeatherDataCollector:
             df.index = pd.to_datetime(df[time_cols])
             df.drop(time_cols, axis=1, inplace=True)
         else:
-            df = self.parse_date_col(df, data_format)
+            try:
+                df = self.parse_date_col(df, data_format)
+            except ValueError:
+                logger.error(f'Failed to parse dates for {station_id}. Skipping...')
+                if output_path.exists():
+                    Path(output_path.stem).mkdir(exist_ok=True)
+                    shutil.move(output_path, Path(output_path.stem, 'FAILED.csv'))
+                return pd.DataFrame()
 
         # Sort by index, drop duplicates
         df = df.sort_index()
@@ -270,10 +287,12 @@ class WeatherDataCollector:
         :param str data_format: Data format ('hourly', 'daily', 'monthly')
         :return pd.DataFrame: Formatted dataframe
         """
-        # Set date column as index and drop
+        # Set date column as index and drop rows missing dates
         df = df.set_index('date', drop=True)
+        df = df[df.index != ' ']
 
         # Assert that all values are numeric
+        df = df.replace(' ', np.nan)
         df = df.astype(float)
 
         # Determine time format
@@ -282,22 +301,57 @@ class WeatherDataCollector:
         elif data_format == 'hourly':
             format_ = '%d-%b-%Y %H:%M'
 
-        logger.debug(f'Found dates in range: {df.index[0]} - {df.index[-1]}')
-
-        # Ensure no future dates are present
-        if df.index.str.contains(str(datetime.now().year + 1)).any():
-            raise ValueError(f'Future dates found: parsing failed: {df.index}')
-
-        # Convert index to DatetimeIndex
-        df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
-        df.index = pd.to_datetime(df.index, format=format_)
-
+        # Validate year range
+        self.start_year, self.end_year = -1, -1
+        self.validate_year(df)
         df = df.replace(' ', np.nan)
 
-        # Ensure no future dates are present (again)
+        # Create date range index (will fail due to gaps in data)
+        # df.index = pd.date_range(start=df.index[0], periods=len(df), freq=data_format[0].upper())
+
+        # Apply format to index and validate again
+        df.index = pd.to_datetime(df.index, format=format_)
+        self.validate_year(df)
+        return df
+
+    def validate_year(self, df: pd.DataFrame):
+        """Ensure that the year range in the dataframe matches the expected range
+
+        :param pd.DataFrame df: Input dataframe
+        :raises ValueError: If year(s) do not match
+        """
+        logger.error(f'Found dates in range: {df.index[0]} - {df.index[-1]}')
+
+        if self.start_year == -1:
+            self.start_year = self.year_from_str(df, 0)
+            self.end_year = self.year_from_str(df, -1)
+        else:
+            start_year = self.year_from_str(df, 0, 0)
+            end_year = self.year_from_str(df, -1, 0)
+
+            if self.start_year != start_year or self.end_year != end_year:
+                raise ValueError(
+                    'Year mismatch!\n'
+                    f'Expected: {self.start_year} - {self.end_year}\n'
+                    f'Found: {start_year} - {end_year}\n'
+                )
+
         if df.index.astype(str).str.contains(str(datetime.now().year + 1)).any():
             raise ValueError(f'Future dates found: parsing failed: {df.index}')
-        return df
+
+    def year_from_str(self, df: pd.DataFrame, index: int, year_position: int = -1) -> int:
+        """Extract year from date string
+
+        :param pd.DataFrame df: Input dataframe
+        :param int index: Row index
+        :param int year_position: Expected position of year in date string, defaults to -1
+        :return int: Year
+        """
+        return int(
+            str(df.index[index])  # get index value at given row
+            .split(' ', maxsplit=1)[0]  # ignore time part
+            .split('-')[year_position]  # get year part
+        )
 
 
 if __name__ == '__main__':
