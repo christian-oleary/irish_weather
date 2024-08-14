@@ -320,8 +320,6 @@ class WeatherDataCollector:
         :param pd.DataFrame df: Input dataframe
         :raises ValueError: If year(s) do not match
         """
-        logger.error(f'Found dates in range: {df.index[0]} - {df.index[-1]}')
-
         if self.start_year == -1:
             self.start_year = self.year_from_str(df, 0)
             self.end_year = self.year_from_str(df, -1)
