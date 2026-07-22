@@ -6,6 +6,7 @@ Irish weather data from Met Eireann (Creative Commons Attribution 4.0 Internatio
 [![Pylint](https://github.com/christian-oleary/irish_weather/actions/workflows/pylint.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/pylint.yml)
 [![Tests (pytest and flake8)](https://github.com/christian-oleary/irish_weather/actions/workflows/tests.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/tests.yml)
 
+Update (2026): data fetching is failing. Target API has likely changed. Needs updating.
 
 ## Data Download Page
 
