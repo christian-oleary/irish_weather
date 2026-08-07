@@ -1,12 +1,14 @@
-# Irish Weather
+# Irish Weather [ARCHIVED]
+
+> **Update (2026): data fetching is failing. Target API has likely changed. Needs updating.**
+>
+> CURRENTLY INACTIVE
 
 Irish weather data from Met Eireann (Creative Commons Attribution 4.0 International (CC BY 4.0) License)
 
 [![Fetch Data](https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/fetch_data.yml)
 [![Pylint](https://github.com/christian-oleary/irish_weather/actions/workflows/pylint.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/pylint.yml)
 [![Tests (pytest and flake8)](https://github.com/christian-oleary/irish_weather/actions/workflows/tests.yml/badge.svg)](https://github.com/christian-oleary/irish_weather/actions/workflows/tests.yml)
-
-Update (2026): data fetching is failing. Target API has likely changed. Needs updating.
 
 ## Data Download Page
 
